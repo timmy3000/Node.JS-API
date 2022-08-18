@@ -6,6 +6,7 @@ import './App.css';
 function App() {
 
 	const [data, setData] = useState([0]);
+	const [loading, setLoading] = useState(0);
 
 	useEffect(() => {
 		fetch('http://127.0.0.1:8081')
@@ -13,6 +14,7 @@ function App() {
 			if(response.ok) {
 				return response.json();
 			}
+
 			throw response;
 		})
 		.then((response) => {
@@ -22,18 +24,20 @@ function App() {
 
 		})
 		.finally(() => {
-
+			setLoading(1);
 		})
 	}, []);
 
 	let display = [];
+	let count = 0;
 
 	for(let i = 0; i < data.length; i++) {
 		let keys_1 = Object.keys(data[i]);
 		let values_1 = Object.values(data[i]);
 
 		
-		display.push(<p>{i+1}.</p>);
+		display.push(<p key={count}>{i+1}.</p>);
+		count++;
 
 		let temp_1 = [];
 
@@ -46,7 +50,9 @@ function App() {
 
 				
 				let temp_2 = [];
-				temp_2.push(<li>{keys_1[k]}:</li>);
+				temp_2.push(<li key={count}>{keys_1[k]}:</li>);
+				count++;
+		
 				
 				let temp_3 = [];
 				for(let j = 0; j < keys_2.length; j++) {
@@ -59,37 +65,55 @@ function App() {
 						
 						let temp_4 = [];
 
-						temp_4.push(<li>{keys_2[j]}:</li>);
+						temp_4.push(<li key={count}>{keys_2[j]}:</li>);
+						count++;
+				
 
 						
 						let temp_5 = [];
 						for(let c = 0; c < keys_3.length; c++) {
-							temp_5.push(<li>{keys_3[c]}: {values_3[c]}</li>);
+							temp_5.push(<li key={count}>{keys_3[c]}: {values_3[c]}</li>);
+							count++;
+					
 						}
 
-						temp_4.push(<ul>{temp_5}</ul>);
+						temp_4.push(<ul key={count}>{temp_5}</ul>);
+						count++;
+				
 						
-						temp_3.push(<ul>{temp_4}</ul>);
+						temp_3.push(<ul key={count}>{temp_4}</ul>);
+						count++;
+				
 
 					} else {
-						temp_3.push(<li>{keys_2[j]}: {values_2[j]}</li>);
+						temp_3.push(<li key={count}>{keys_2[j]}: {values_2[j]}</li>);
+						count++;
+				
 					}
 
 					
 				}
 
-				temp_2.push(<ul>{temp_3}</ul>);
+				temp_2.push(<ul key={count}>{temp_3}</ul>);
+				count++;
+		
 					
-				temp_1.push(<ul>{temp_2}</ul>);
+				temp_1.push(<ul key={count}>{temp_2}</ul>);
+				count++;
+		
 
 			} else {
-				temp_1.push(<li>{keys_1[k]}: {values_1[k]}</li>);
+				temp_1.push(<li key={count}>{keys_1[k]}: {values_1[k]}</li>);
+				count++;
+		
 			}
 
 			
 		}
 		
-		display.push(<ul>{temp_1}</ul>);
+		display.push(<ul key={count}>{temp_1}</ul>);
+		count++;
+
 
 	}
 	
@@ -97,7 +121,15 @@ function App() {
 		<div className="App">
 			<h1>Node.js API</h1>
 			<div id='mid_content'>
-				{display}
+				{
+					(loading) ? (
+						display
+					) : (
+						"Loading..."
+					)
+					
+				} 
+
 			</div>			
 
 		</div>
